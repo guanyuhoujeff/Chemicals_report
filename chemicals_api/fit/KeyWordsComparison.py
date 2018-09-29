@@ -4,7 +4,7 @@ import jieba
 import numpy as np
 import copy
 ## 載入自訂字典
-KeyWords_path = "./keyWordsDB"
+KeyWords_path = __file__.replace("KeyWordsComparison.py",  "keyWordsDB") 
 jieba.load_userdict(os.path.join(KeyWords_path, "AllKeyWords.txt"))
 
 class KeyWordsComparator:

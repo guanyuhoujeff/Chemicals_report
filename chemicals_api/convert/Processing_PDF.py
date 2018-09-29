@@ -17,11 +17,11 @@ class PDFReader:
     def __init__(self, read_pdf_path, pdf_file_name):
         self.read_pdf_path = read_pdf_path
         self.file_name = pdf_file_name
-        self.content, self.img_list = self.__pdf_convent_to_text()
+        self.content, self.img_list = self.__pdf_convert_to_text()
     '''
      輸入pdf 文件的路徑，可取得文件的純文字與圖片列表{list資料型態}
     '''
-    def __pdf_convent_to_text(self):
+    def __pdf_convert_to_text(self):
         fp = open(os.path.join(self.read_pdf_path, self.file_name), 'rb')  # 以二進制模式打開
         #用文件對象創造一個pdf分析物件
         praser = PDFParser(fp)
@@ -67,7 +67,7 @@ class PDFReader:
      輸入路徑，自動檢查是否存在，並自動產生該路徑
     '''
 
-    def check_and_mdirs(self, path):
+    def __check_and_mdirs(self, path):
         if not(os.path.exists(path)):
             os.makedirs(path)
 
@@ -77,7 +77,7 @@ class PDFReader:
 
     def save_txt_file(self, path):
         save_path = os.path.join(path, "%s" % self.file_name.replace(".pdf", ""), "txt")
-        self.check_and_mdirs(save_path)
+        self.__check_and_mdirs(save_path)
         with open(os.path.join(save_path, self.file_name.replace(".pdf", ".txt")), 'w', encoding="utf8") as writer:
             writer.write(self.content)
             #print("%s text content save in %s"%(self.file_name.replace(".pdf", ".txt"), save_path))
@@ -86,7 +86,7 @@ class PDFReader:
     '''
     def save_img_file(self, path):
         save_path = os.path.join(path, "%s" % self.file_name.replace(".pdf", ""), "graph")
-        self.check_and_mdirs(save_path)
+        self.__check_and_mdirs(save_path)
         graph_idx = 1
         for img in self.img_list:
             with open(os.path.join(save_path, "圖片%d.jpg"%graph_idx), 'wb') as img_writer:

@@ -9,7 +9,7 @@ Created on Sun Jun 24 02:47:26 2018
 
 import os
 import pandas as pd
-
+from chemicals_api.fit import KeyWordsComparison
 # =============================================================================
 #  load txt chemicals_txt
 # =============================================================================
