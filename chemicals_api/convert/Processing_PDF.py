@@ -27,7 +27,6 @@ class PDFReader:
         praser = PDFParser(fp)
         # 創建一個pdf文檔
         doc = PDFDocument()
-        # 连接分析器 与文档对象
         praser.set_document(doc)
         doc.set_parser(praser)
         # 提供初始化密码
@@ -37,36 +36,27 @@ class PDFReader:
         content = ""
         ## img_list 為存放圖片位置
         img_list = []
-
-        # 检测文档是否提供txt转换，不提供就忽略
+        # 檢查文件是否提供txt轉換，不提供就忽略
         if not doc.is_extractable:
             raise PDFTextExtractionNotAllowed
         else:
-            # 创建PDf 资源管理器 来管理共享资源
+            # 建立PDf 資源管理器
             rsrcmgr = PDFResourceManager()
-            # 创建一个PDF设备对象
             laparams = LAParams()
             device = PDFPageAggregator(rsrcmgr, laparams=laparams)
-            # 创建一个PDF解释器对象
             interpreter = PDFPageInterpreter(rsrcmgr, device)
-
-            # 循环遍历列表，每次处理一个page的内容
-            for page in doc.get_pages(): # doc.get_pages() 获取page列表
+            # 每次處理一個page的内容
+            for page in doc.get_pages(): # doc.get_pages() 獲取page列表
                 interpreter.process_page(page)
-                # 接受该页面的LTPage对象
                 layout = device.get_result()
-                # 这里layout是一个LTPage对象 里面存放着 这个page解析出的各种对象 一般包括LTTextBox, LTFigure, LTImage, LTTextBoxHorizontal 等等 想要获取文本就获得对象的text属性，
                 for line in layout:
                     ## 處理純文字部分，寫入txt
                     if (isinstance(line, LTTextBoxHorizontal)):
                         content = content + line.get_text().replace("北", "北") + '\n'
-
                     ## 處理圖片，輸出至graph 資料夾
                     if isinstance(line, LTFigure):
                         for im in line:
                             if isinstance(im, LTImage):
-                                # Found one!
-                                st = None
                                 imdata = im.stream.get_data()
                                 if not(b'\xbe\x00\x00\xbe\x00\x00' in imdata):
                                     img_list.append(imdata)
